@@ -12,4 +12,4 @@ This repository contains all sources and slides to replay the Tutoring-Session *
 ## Run
 
 * Build Spring Batch "Task" with `mvn clean install`
-* See [SETUP.md](../setup/SETUP.md) in `setup` folder for Deployment
+* See [SETUP.md](setup/SETUP.md) in `setup` folder for Deployment
