@@ -1,7 +1,8 @@
-package dev.wcs.tutoring.batchprocessing;
+package dev.wcs.tutoring.batchprocessing.processor;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import dev.wcs.tutoring.batchprocessing.model.Person;
 import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;

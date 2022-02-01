@@ -1,4 +1,4 @@
-package dev.wcs.tutoring.batchprocessing;
+package dev.wcs.tutoring.batchprocessing.model;
 
 import lombok.*;
 

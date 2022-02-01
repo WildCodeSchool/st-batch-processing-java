@@ -1,8 +1,7 @@
-package dev.wcs.tutoring.batchprocessing;
+package dev.wcs.tutoring.batchprocessing.processor;
 
+import dev.wcs.tutoring.batchprocessing.model.Person;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.springframework.batch.item.ItemProcessor;
 

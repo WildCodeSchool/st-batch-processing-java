@@ -1,5 +1,10 @@
-package dev.wcs.tutoring.batchprocessing;
+package dev.wcs.tutoring.batchprocessing.config;
 
+import dev.wcs.tutoring.batchprocessing.JobCompletionNotificationListener;
+import dev.wcs.tutoring.batchprocessing.model.Person;
+import dev.wcs.tutoring.batchprocessing.processor.PersonItemProcessor;
+import dev.wcs.tutoring.batchprocessing.processor.CountryEnricher;
+import dev.wcs.tutoring.batchprocessing.processor.CovidStatisticsEnricher;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -62,7 +67,7 @@ public class BatchConfiguration {
 	public FlatFileItemReader<Person> csvReader() {
 		return new FlatFileItemReaderBuilder<Person>()
 				.name("personItemReader")
-				.resource(new ClassPathResource("sample-data.csv"))
+				.resource(new ClassPathResource("people.csv"))
 				.delimited()
 				.names(new String[]{"firstName", "lastName", "country"})
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {{
