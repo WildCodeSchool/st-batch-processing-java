@@ -7,12 +7,14 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 public class CovidStatisticsEnricher implements ItemProcessor<Person, Person> {
 
-    private String covidAPI = "https://api.covid19api.com/dayone/country/";
+    @Value("${covidstats.enricher.url}")
+    private String covidAPI;
 
     @Override
     public Person process(Person item) throws Exception {

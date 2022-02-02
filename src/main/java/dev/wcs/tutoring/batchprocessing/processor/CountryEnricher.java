@@ -8,12 +8,14 @@ import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import net.minidev.json.JSONArray;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
 public class CountryEnricher implements ItemProcessor<Person, Person> {
 
-    private String countryAPI = "https://restcountries.com/v3.1/alpha/";
+    @Value("${country.enricher.url}")
+    private String countryAPI;
 
     @Override
     public Person process(Person item) throws Exception {
