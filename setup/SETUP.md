@@ -21,3 +21,15 @@ export SPRING_CLOUD_DATAFLOW_FEATURES_TASKS_ENABLED=true
 ![](dashboard.png)
 
 * Create a Task and a Job for Starting the Spring Batch Job as a Cloud Data Flow Task 
+
+## Start Task
+
+* Note: You have to have a "task" deployed with Maven artifact: `maven://de.wcs.tutoring:batch-processing:0.0.1-SNAPSHOT`
+* Add the configuration properties below for a success Batch run.
+
+``` 
+country.enricher.url=https://restcountries.com/v3.1/alpha/
+covidstats.enricher.url=https://api.covid19api.com/dayone/country/
+```
+
+![](setup.png)
