@@ -17,14 +17,13 @@ public class CovidStatisticsEnricher implements ItemProcessor<Person, Person> {
     private String covidAPI;
 
     @Override
-    public Person process(Person item) throws Exception {
-        HttpResponse<JsonNode> jsonResponse = Unirest
-            .get(covidAPI + "{country}")
-            .routeParam("country", item.getCountry()).asJson();
+    public Person process(Person item) {
+        HttpResponse<JsonNode> jsonResponse = Unirest.get(covidAPI + item.getCountry()).asJson();
         String jsonString = jsonResponse.getBody().toString();
         DocumentContext jsonContext = JsonPath.parse(jsonString);
-        List<Object> jsonpathCreatorName = jsonContext.read("$[*]['Confirmed']");
-        Integer[] casesArray = jsonpathCreatorName.toArray(new Integer[0]);
+        // read confirmed cases
+        List<Object> confirmedCases = jsonContext.read("$[*]['Confirmed']");
+        Integer[] casesArray = confirmedCases.toArray(new Integer[0]);
         item.setActiveCovidCases(casesArray[casesArray.length-1]);
         return item;
     }

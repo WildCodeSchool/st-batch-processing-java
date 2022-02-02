@@ -18,18 +18,18 @@ public class CountryEnricher implements ItemProcessor<Person, Person> {
     private String countryAPI;
 
     @Override
-    public Person process(Person item) throws Exception {
-        HttpResponse<JsonNode> jsonResponse = Unirest
-            .get(countryAPI + "{country}")
-            .routeParam("country", item.getCountry()).asJson();
+    public Person process(Person item) {
+        HttpResponse<JsonNode> jsonResponse = Unirest.get(countryAPI + item.getCountry()).asJson();
         String jsonString = jsonResponse.getBody().toString();
         DocumentContext jsonContext = JsonPath.parse(jsonString);
-        List<Object> jsonpathCreatorName = jsonContext.read("$[*]['population']");
-        Integer[] populationArray = jsonpathCreatorName.toArray(new Integer[0]);
+        // read population
+        List<Object> population = jsonContext.read("$[*]['population']");
+        Integer[] populationArray = population.toArray(new Integer[0]);
         item.setPopulation(populationArray[0]);
-        jsonpathCreatorName = jsonContext.read("$[*]['capital']");
-        Object[] capArray = jsonpathCreatorName.toArray(new Object[0]);
-        item.setCapital(((JSONArray)capArray[0]).toJSONString());
+        // read capital
+        List<Object> capital = jsonContext.read("$[*]['capital']");
+        JSONArray[] capArray = capital.toArray(new JSONArray[0]);
+        item.setCapital(capArray[0].get(0).toString());
         return item;
     }
 }
