@@ -18,7 +18,6 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,17 +27,24 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-// tag::setup[]
 @Configuration
 @EnableBatchProcessing
 @EnableTask
 public class BatchConfiguration {
 
 	private final JdbcTemplate jdbcTemplate;
+	private final JobBuilderFactory jobBuilderFactory;
+	private final StepBuilderFactory stepBuilderFactory;
 
-	public BatchConfiguration(JdbcTemplate jdbcTemplate) {
+	public BatchConfiguration(JdbcTemplate jdbcTemplate, JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory) {
 		this.jdbcTemplate = jdbcTemplate;
+		this.jobBuilderFactory = jobBuilderFactory;
+		this.stepBuilderFactory = stepBuilderFactory;
 	}
+
+	/**
+	 * Initialize the database, Create PEOPLE Table if not exists
+	 */
 
 	@PostConstruct
 	private void init() {
@@ -55,14 +61,10 @@ public class BatchConfiguration {
 				")");
 	}
 
-	@Autowired
-	public JobBuilderFactory jobBuilderFactory;
+	/**
+	 * Create ItemReaders for CSV and DB
+	 */
 
-	@Autowired
-	public StepBuilderFactory stepBuilderFactory;
-	// end::setup[]
-
-	// tag::readerwriterprocessor[]
 	@Bean
 	public FlatFileItemReader<Person> csvReader() {
 		return new FlatFileItemReaderBuilder<Person>()
@@ -88,6 +90,10 @@ public class BatchConfiguration {
 		return cursorItemReader;
 	}
 
+	/**
+	 * Create Processors for People Information Enrichment
+	 */
+
 	@Bean
 	public PersonItemProcessor personItemProcessor() {
 		return new PersonItemProcessor();
@@ -102,6 +108,10 @@ public class BatchConfiguration {
 	public CovidStatisticsEnricher covidStatisticsEnricher() {
 		return new CovidStatisticsEnricher();
 	}
+
+	/**
+	 * Create ItemWriter for storing imported/modified elements.
+	 */
 
 	@Bean
 	public JdbcBatchItemWriter<Person> inserter(DataSource dataSource) {
@@ -122,19 +132,10 @@ public class BatchConfiguration {
 						.dataSource(dataSource)
 						.build();
 	}
-	// end::readerwriterprocessor[]
 
-	// tag::jobstep[]
-	@Bean
-	public Job importUserJob(JobCompletionNotificationListener listener, Step importCsv, Step enrichCountryInformation, Step enrichCovidStatistics) {
-		return jobBuilderFactory.get("processPersonJob")
-			.incrementer(new RunIdIncrementer())
-			.listener(listener)
-			.start(importCsv)
-			.next(enrichCountryInformation)
-			.next(enrichCovidStatistics)
-			.build();
-	}
+	/**
+	 * Create Batch "Job" with "Steps"
+	 */
 
 	@Bean
 	public Step importCsv(JdbcBatchItemWriter<Person> inserter) {
@@ -165,5 +166,16 @@ public class BatchConfiguration {
 				.writer(updater)
 				.build();
 	}
-	// end::jobstep[]
+
+	@Bean
+	public Job importUserJob(JobCompletionNotificationListener listener, Step importCsv, Step enrichCountryInformation, Step enrichCovidStatistics) {
+		return jobBuilderFactory.get("processPersonJob")
+				.incrementer(new RunIdIncrementer())
+				.listener(listener)
+				.start(importCsv)
+				.next(enrichCountryInformation)
+				.next(enrichCovidStatistics)
+				.build();
+	}
+
 }
