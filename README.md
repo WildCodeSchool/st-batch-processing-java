@@ -1,6 +1,6 @@
 # Batch Processing in Modern Java - Data Bulk Processing with Spring Batch
 
-This repository contains all sources and slides to replay the Tutoring-Session *Batches in Modern Java - Data Bulk Processing with Spring Batch*.
+This repository contains all sources and slides to replay the Tutoring-Session *Batch Processing in Modern Java - Data Bulk Processing with Spring Batch*.
 
 ## Prerequisites
 
